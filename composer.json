@@ -1,11 +1,15 @@
 {
-    "name": "phpoffice/phppowerpoint",
+    "name": "cleverape/phppowerpoint",
     "description": "PHPPowerPoint - Read, Create and Write Presentations documents in PHP",
     "keywords": ["PHP","PowerPoint","LibreOffice","pptx","ppt","odp","presentations"],
     "homepage": "http://phpoffice.github.io",
     "type": "library",
     "license": "LGPL",
     "authors": [
+        {
+            "name": "Fabien Lachaud",
+            "homepage": "http://www.cleverape.com"
+        },
         {
             "name": "Mark Baker"
         },
