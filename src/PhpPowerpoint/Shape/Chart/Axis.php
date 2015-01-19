@@ -39,6 +39,48 @@ class Axis implements ComparableInterface
     private $formatCode = '';
 
     /**
+     * Min Value
+     *
+     * @var integer
+     */
+    private $min = null;
+
+    /**
+     * Max Value
+     *
+     * @var integer
+     */
+    private $max = null;
+    
+    /**
+     * Minor Tick Mark
+     *
+     * @var string
+     */
+    private $minorTickMark = 'out';
+    
+    /**
+     * Major Tick Mark
+     *
+     * @var string
+     */
+    private $majorTickMark = 'cross';
+    
+    /**
+     * Minor Unit
+     *
+     * @var string
+     */
+    private $minorUnit = '0.05';
+    
+    /**
+     * Major Unit
+     *
+     * @var string
+     */
+    private $majorUnit = '0.1';
+
+    /**
      * Create a new \PhpOffice\PhpPowerpoint\Shape\Chart\Axis instance
      *
      * @param string $title Title
@@ -90,6 +132,144 @@ class Axis implements ComparableInterface
     public function setFormatCode($value = '')
     {
         $this->formatCode = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Min Value
+     *
+     * @return integer
+     */
+    public function getMin()
+    {
+        return $this->min;
+    }
+
+    /**
+     * Set Min Value
+     *
+     * @param integer $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMin($value = null)
+    {
+        $this->min = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Max Value
+     *
+     * @return integer
+     */
+    public function getMax()
+    {
+        return $this->max;
+    }
+
+    /**
+     * Set Max Value
+     *
+     * @param integer $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMax($value = null)
+    {
+        $this->max = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Major Tick Mark
+     *
+     * @return string
+     */
+    public function getMajorTickMark()
+    {
+        return $this->majorTickMark;
+    }
+
+    /**
+     * Set Major Tick Mark
+     *
+     * @param string $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMajorTickMark($value = null)
+    {
+        $this->majorTickMark = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Minor Tick Mark
+     *
+     * @return string
+     */
+    public function getMinorTickMark()
+    {
+        return $this->minorTickMark;
+    }
+
+    /**
+     * Set Minor Tick Mark
+     *
+     * @param string $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMinorTickMark($value = null)
+    {
+        $this->minorTickMark = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Major Unit
+     *
+     * @return string
+     */
+    public function getMajorUnit()
+    {
+        return $this->majorUnit;
+    }
+
+    /**
+     * Set Major Unit
+     *
+     * @param string $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMajorUnit($value = null)
+    {
+        $this->majorUnit = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get Minor Unit
+     *
+     * @return string
+     */
+    public function getMinorUnit()
+    {
+        return $this->minorUnit;
+    }
+
+    /**
+     * Set Minor Unit
+     *
+     * @param string $value
+     * @return \PhpOffice\PhpPowerpoint\Shape\Chart\Axis
+     */
+    public function setMinorUnit($value = null)
+    {
+        $this->minorUnit = $value;
 
         return $this;
     }

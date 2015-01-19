@@ -17,3 +17,4 @@ vendor
 /phpunit.bat
 /todo.txt
 /samples/Sample_00_Test.php
+/nbproject/

@@ -214,13 +214,13 @@ class Chart extends Slide
             throw new \Exception('No spreadsheet output is required for the given chart.');
         }
 
-        // Verify PHPExcel
+        // Verify \PHPExcel
         if (!class_exists('PHPExcel')) {
             throw new \Exception('PHPExcel has not been loaded. Include PHPExcel.php in your script, e.g. require_once \'PHPExcel.php\'.');
         }
 
         // Create new spreadsheet
-        $workbook = new PHPExcel();
+        $workbook = new \PHPExcel();
 
         // Set properties
         $title = $chart->getTitle()->getText();
@@ -255,7 +255,7 @@ class Chart extends Slide
         }
 
         // Save to string
-        $writer = PHPExcel_IOFactory::createWriter($workbook, 'Excel2007');
+        $writer = \PHPExcel_IOFactory::createWriter($workbook, 'Excel2007');
         $writer->save($tempName);
 
         // Load file in memory
@@ -350,6 +350,11 @@ class Chart extends Slide
             // Reference
             $objWriter->writeElement('c:f', $reference);
             $objWriter->startElement('c:' . $dataType . 'Cache');
+
+            if ($dataType === 'num') {
+                // c:formatCode
+                $objWriter->writeElement('c:formatCode', '0%');
+            }
 
             // c:ptCount
             $objWriter->startElement('c:ptCount');
@@ -537,7 +542,7 @@ class Chart extends Slide
             // c:numFmt
             $objWriter->startElement('c:numFmt');
             $objWriter->writeAttribute('formatCode', $subject->getAxisX()->getFormatCode());
-            $objWriter->writeAttribute('sourceLinked', '0');
+            $objWriter->writeAttribute('sourceLinked', '1');
             $objWriter->endElement();
 
             // c:majorTickMark
@@ -635,6 +640,20 @@ class Chart extends Slide
             $objWriter->writeAttribute('val', 'minMax');
             $objWriter->endElement();
 
+            // c:min
+            if ($subject->getAxisY()->getMin() !== null) {
+                $objWriter->startElement('c:min');
+                $objWriter->writeAttribute('val', $subject->getAxisY()->getMin());
+                $objWriter->endElement();
+            }
+
+            // c:max
+            if ($subject->getAxisY()->getMax() !== null) {
+                $objWriter->startElement('c:max');
+                $objWriter->writeAttribute('val', $subject->getAxisY()->getMax());
+                $objWriter->endElement();
+            }
+
             $objWriter->endElement();
 
             // c:axPos
@@ -645,16 +664,45 @@ class Chart extends Slide
             // c:numFmt
             $objWriter->startElement('c:numFmt');
             $objWriter->writeAttribute('formatCode', $subject->getAxisY()->getFormatCode());
-            $objWriter->writeAttribute('sourceLinked', '0');
+            $objWriter->writeAttribute('sourceLinked', '1');
             $objWriter->endElement();
 
             // c:majorGridlines
-            //$objWriter->startElement('c:majorGridlines');
-            //$objWriter->endElement();
+            $objWriter->startElement('c:majorGridlines');
+            $objWriter->startElement('c:spPr');
+            $objWriter->startElement('a:ln');
+            $objWriter->writeAttribute('w', '9525');
+            $objWriter->writeAttribute('cap', 'rnd');
+
+            $objWriter->startElement('a:solidFill');
+
+            $objWriter->startElement('a:schemeClr');
+            $objWriter->writeAttribute('val', 'bg1');
+
+            $objWriter->startElement('a:lumMod');
+            $objWriter->writeAttribute('val', '75000');
+            $objWriter->endElement();
+
+            $objWriter->endElement();
+
+            $objWriter->endElement();
+
+            $objWriter->startElement('a:prstDash');
+            $objWriter->writeAttribute('val', 'dash');
+            $objWriter->endElement();
+
+            $objWriter->endElement();
+            $objWriter->endElement();
+            $objWriter->endElement();
 
             // c:majorTickMark
             $objWriter->startElement('c:majorTickMark');
-            $objWriter->writeAttribute('val', 'none');
+            $objWriter->writeAttribute('val', $subject->getAxisY()->getMajorTickMark());
+            $objWriter->endElement();
+
+            // c:majorTickMark
+            $objWriter->startElement('c:minorTickMark');
+            $objWriter->writeAttribute('val', $subject->getAxisY()->getMinorTickMark());
             $objWriter->endElement();
 
             // c:tickLblPos
@@ -719,6 +767,16 @@ class Chart extends Slide
             // c:crossBetween
             $objWriter->startElement('c:crossBetween');
             $objWriter->writeAttribute('val', 'between');
+            $objWriter->endElement();
+
+            // c:majorUnit
+            $objWriter->startElement('c:majorUnit');
+            $objWriter->writeAttribute('val', $subject->getAxisY()->getMajorUnit());
+            $objWriter->endElement();
+
+            // c:majorUnit
+            $objWriter->startElement('c:minorUnit');
+            $objWriter->writeAttribute('val', $subject->getAxisY()->getMinorUnit());
             $objWriter->endElement();
 
             $objWriter->endElement();
@@ -932,7 +990,7 @@ class Chart extends Slide
 
             // c:tx
             $objWriter->startElement('c:tx');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
             $this->writeSingleValueOrReference($objWriter, $includeSheet, $series->getTitle(), $coords);
             $objWriter->endElement();
 
@@ -1058,10 +1116,10 @@ class Chart extends Slide
 
             // c:val
             $objWriter->startElement('c:val');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
             $this->writeMultipleValuesOrReference($objWriter, $includeSheet, $axisYData, $coords);
             $objWriter->endElement();
-            
+
             $objWriter->endElement();
 
             ++$seriesIndex;
@@ -1131,7 +1189,7 @@ class Chart extends Slide
 
             // c:tx
             $objWriter->startElement('c:tx');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
             $this->writeSingleValueOrReference($objWriter, $includeSheet, $series->getTitle(), $coords);
             $objWriter->endElement();
 
@@ -1257,7 +1315,7 @@ class Chart extends Slide
 
             // c:val
             $objWriter->startElement('c:val');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
             $this->writeMultipleValuesOrReference($objWriter, $includeSheet, $axisYData, $coords);
             $objWriter->endElement();
 
@@ -1310,7 +1368,7 @@ class Chart extends Slide
 
             // c:tx
             $objWriter->startElement('c:tx');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
             $this->writeSingleValueOrReference($objWriter, $includeSheet, $series->getTitle(), $coords);
             $objWriter->endElement();
 
@@ -1416,7 +1474,7 @@ class Chart extends Slide
 
             // c:val
             $objWriter->startElement('c:val');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
             $this->writeMultipleValuesOrReference($objWriter, $includeSheet, $axisYData, $coords);
             $objWriter->endElement();
 
@@ -1494,7 +1552,7 @@ class Chart extends Slide
 
             // c:tx
             $objWriter->startElement('c:tx');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex(1 + $seriesIndex) . '$1' : '');
             $this->writeSingleValueOrReference($objWriter, $includeSheet, $series->getTitle(), $coords);
             $objWriter->endElement();
 
@@ -1508,7 +1566,7 @@ class Chart extends Slide
             $objWriter->endElement();
 
             $objWriter->endElement();
-            
+
             // c:dLbls
             $objWriter->startElement('c:dLbls');
 
@@ -1614,7 +1672,7 @@ class Chart extends Slide
 
             // c:yVal
             $objWriter->startElement('c:yVal');
-            $coords = ($includeSheet ? 'Sheet1!$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
+            $coords = ($includeSheet ? 'Sheet1!$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$2:$' . \PHPExcel_Cell::stringFromColumnIndex($seriesIndex + 1) . '$' . (1 + count($axisYData)) : '');
             $this->writeMultipleValuesOrReference($objWriter, $includeSheet, $axisYData, $coords);
             $objWriter->endElement();
 
