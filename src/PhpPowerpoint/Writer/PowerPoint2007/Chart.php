@@ -1195,7 +1195,7 @@ class Chart extends Slide
 
             // c:explosion
             $objWriter->startElement('c:explosion');
-            $objWriter->writeAttribute('val', '20');
+            $objWriter->writeAttribute('val', '0');
             $objWriter->endElement();
 
             // Fills for points?
