@@ -26,7 +26,7 @@ use PhpOffice\PhpPowerpoint\Shape\RichText\Run;
 use PhpOffice\PhpPowerpoint\Shape\RichText\TextElement;
 use PhpOffice\PhpPowerpoint\Shape\Table;
 use PhpOffice\PhpPowerpoint\Shared\Drawing as SharedDrawing;
-use PhpOffice\PhpPowerpoint\Shared\String;
+use PhpOffice\PhpPowerpoint\Shared\StringHelper;
 use PhpOffice\PhpPowerpoint\Shared\XMLWriter;
 use PhpOffice\PhpPowerpoint\Slide as SlideElement;
 use PhpOffice\PhpPowerpoint\Style\Alignment;
@@ -788,7 +788,7 @@ class Slide extends AbstractPart
 
                     // t
                     $objWriter->startElement('a:t');
-                    $objWriter->writeCData(String::controlCharacterPHP2OOXML($element->getText()));
+                    $objWriter->writeCData(StringHelper::controlCharacterPHP2OOXML($element->getText()));
                     $objWriter->endElement();
 
                     $objWriter->endElement();
